@@ -49,14 +49,18 @@ def add_patient():
         ocr_text = None
         image_path = None
 
-        if file:
+        if file and file.filename:
+            # Save the file first
             filename = secure_filename(file.filename)
             timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             filename = f"{timestamp}_{filename}"
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             image_path = os.path.join('uploads', filename)
-            ocr_text = process_image(file)
+
+            # Now process the saved file for OCR
+            with open(filepath, 'rb') as saved_file:
+                ocr_text = process_image(saved_file)
 
         patient = Patient(
             name=data['name'],
