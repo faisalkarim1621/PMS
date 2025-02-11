@@ -14,6 +14,12 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 app.secret_key = "patient_records_secret_key"
 
+# Configure uploads folder
+UPLOAD_FOLDER = 'static/uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # Configure SQLite database
 class Base(DeclarativeBase):
     pass
@@ -39,13 +45,29 @@ def index():
 def add_patient():
     try:
         data = request.form
+        file = request.files.get('document')
+        ocr_text = None
+        image_path = None
+
+        if file:
+            filename = secure_filename(file.filename)
+            timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            filename = f"{timestamp}_{filename}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            image_path = os.path.join('uploads', filename)
+            ocr_text = process_image(file)
+
         patient = Patient(
             name=data['name'],
             age=int(data['age']),
             location=data['location'],
-            patient_id=data['patient_id'],
-            date=datetime.datetime.strptime(data['date'], '%Y-%m-%d')
+            patient_id=Patient.generate_patient_id(),
+            date=datetime.datetime.strptime(data['date'], '%Y-%m-%d'),
+            image_path=image_path,
+            ocr_text=ocr_text
         )
+
         db.session.add(patient)
         db.session.commit()
         return jsonify({"success": True, "message": "Patient added successfully"})
@@ -66,11 +88,11 @@ def search_patients():
 def ocr_scan():
     if 'file' not in request.files:
         return jsonify({"success": False, "message": "No file uploaded"}), 400
-    
+
     file = request.files['file']
     if file.filename == '':
         return jsonify({"success": False, "message": "No file selected"}), 400
-    
+
     try:
         text = process_image(file)
         return jsonify({"success": True, "text": text})

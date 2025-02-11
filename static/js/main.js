@@ -1,18 +1,18 @@
 // Form submission handler
 async function submitPatientForm(event) {
     event.preventDefault();
-    
+
     const form = event.target;
     const formData = new FormData(form);
-    
+
     try {
         const response = await fetch('/api/patients', {
             method: 'POST',
             body: formData
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             showAlert('success', 'Patient added successfully');
             form.reset();
@@ -39,12 +39,12 @@ async function searchPatients(query) {
 // Display search results
 function displaySearchResults(patients) {
     const resultsContainer = document.getElementById('searchResults');
-    
+
     if (patients.length === 0) {
         resultsContainer.innerHTML = '<p class="text-muted">No patients found</p>';
         return;
     }
-    
+
     const html = patients.map(patient => `
         <div class="card mb-3">
             <div class="card-body">
@@ -55,10 +55,16 @@ function displaySearchResults(patients) {
                     Location: ${patient.location}<br>
                     Date: ${patient.date}
                 </p>
+                ${patient.ocr_text ? `
+                    <div class="mt-3">
+                        <h6>Extracted Text from Document:</h6>
+                        <p class="text-muted">${patient.ocr_text}</p>
+                    </div>
+                ` : ''}
             </div>
         </div>
     `).join('');
-    
+
     resultsContainer.innerHTML = html;
 }
 
@@ -66,20 +72,20 @@ function displaySearchResults(patients) {
 async function processDocument(event) {
     const file = event.target.files[0];
     if (!file) return;
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
+
     showLoading(true);
-    
+
     try {
         const response = await fetch('/api/ocr', {
             method: 'POST',
             body: formData
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             document.getElementById('ocrResult').value = result.text;
         } else {
