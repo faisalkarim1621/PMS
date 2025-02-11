@@ -16,6 +16,7 @@ async function submitPatientForm(event) {
         if (result.success) {
             showAlert('success', 'Patient added successfully');
             form.reset();
+            setDefaultDate(); // Reset the date to today after form reset
             searchPatients('');
         } else {
             showAlert('danger', result.message);
@@ -57,7 +58,7 @@ function displaySearchResults(patients) {
                 </p>
                 ${patient.ocr_text ? `
                     <div class="mt-3">
-                        <h6>Extracted Text from Document:</h6>
+                        <h6>Document Text:</h6>
                         <p class="text-muted">${patient.ocr_text}</p>
                     </div>
                 ` : ''}
@@ -114,9 +115,16 @@ function showLoading(show) {
     loader.style.display = show ? 'block' : 'none';
 }
 
+// Set default date to today
+function setDefaultDate() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').value = today;
+}
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('patientForm').addEventListener('submit', submitPatientForm);
     document.getElementById('searchInput').addEventListener('input', (e) => searchPatients(e.target.value));
     document.getElementById('documentUpload').addEventListener('change', processDocument);
+    setDefaultDate(); // Set default date when page loads
 });

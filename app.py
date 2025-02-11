@@ -83,9 +83,13 @@ def add_patient():
 def search_patients():
     query = request.args.get('query', '')
     patients = Patient.query.filter(
-        (Patient.name.ilike(f'%{query}%')) |
-        (Patient.patient_id.ilike(f'%{query}%'))
-    ).all()
+        db.or_(
+            Patient.name.ilike(f'%{query}%'),
+            Patient.patient_id.ilike(f'%{query}%'),
+            Patient.location.ilike(f'%{query}%'),
+            Patient.ocr_text.ilike(f'%{query}%')
+        )
+    ).order_by(Patient.date.desc()).all()
     return jsonify([p.to_dict() for p in patients])
 
 @app.route('/api/ocr', methods=['POST'])
