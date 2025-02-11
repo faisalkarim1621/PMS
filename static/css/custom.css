@@ -1,0 +1,49 @@
+/* Custom styles to complement Bootstrap */
+:root {
+    --medical-blue: #2c3e50;
+    --medical-light: #ecf0f1;
+}
+
+.medical-header {
+    background: var(--bs-dark);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.form-section {
+    background: var(--bs-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+#loader {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.search-section {
+    margin-bottom: 2rem;
+}
+
+.ocr-section {
+    background: var(--bs-dark);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+#ocrResult {
+    min-height: 150px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-section, .ocr-section {
+        padding: 1rem;
+    }
+}

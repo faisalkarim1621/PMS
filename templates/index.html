@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-section">
+            <h2 class="mb-4">Add New Patient</h2>
+            <form id="patientForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" required>
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" required>
+                </div>
+                <div class="mb-3">
+                    <label for="patient_id" class="form-label">Patient ID</label>
+                    <input type="text" class="form-control" id="patient_id" name="patient_id" required>
+                </div>
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Patient</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="ocr-section">
+            <h2 class="mb-4">Document Scanner</h2>
+            <div class="mb-3">
+                <label for="documentUpload" class="form-label">Upload Document</label>
+                <input type="file" class="form-control" id="documentUpload" accept="image/*">
+            </div>
+            <div class="mb-3">
+                <label for="ocrResult" class="form-label">Extracted Text</label>
+                <textarea class="form-control" id="ocrResult" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="search-section">
+    <h2 class="mb-4">Search Patients</h2>
+    <div class="mb-3">
+        <input type="text" class="form-control" id="searchInput" placeholder="Search by name or patient ID">
+    </div>
+    <div id="searchResults"></div>
+</div>
+{% endblock %}
