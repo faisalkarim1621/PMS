@@ -1,5 +1,10 @@
 {pkgs}: {
   deps = [
+    pkgs.xcodebuild
+    pkgs.cacert
+    pkgs.python311
+    pkgs.tesseract
+    pkgs.nano
     pkgs.tesseract
     pkgs.zlib
     pkgs.tk

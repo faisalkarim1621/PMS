@@ -50,7 +50,6 @@ def add_patient():
         image_path = None
 
         if file and file.filename:
-            # Save the file first
             filename = secure_filename(file.filename)
             timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             filename = f"{timestamp}_{filename}"
@@ -58,7 +57,7 @@ def add_patient():
             file.save(filepath)
             image_path = os.path.join('uploads', filename)
 
-            # Now process the saved file for OCR
+            # Process the saved file for OCR
             with open(filepath, 'rb') as saved_file:
                 ocr_text = process_image(saved_file)
 
@@ -107,3 +106,7 @@ def ocr_scan():
     except Exception as e:
         logging.error(f"OCR processing error: {str(e)}")
         return jsonify({"success": False, "message": str(e)}), 400
+
+# Run the app
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
