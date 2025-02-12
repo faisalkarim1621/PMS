@@ -1,5 +1,6 @@
 {pkgs}: {
   deps = [
+    pkgs.lsof
     pkgs.xcodebuild
     pkgs.cacert
     pkgs.python311

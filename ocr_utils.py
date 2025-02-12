@@ -1,28 +1,24 @@
-import pytesseract
-from PIL import Image
-import io
+import requests
+import base64
 
-def process_image(file_storage):
-    """
-    Process an uploaded image file using Tesseract OCR
-    """
-    try:
-        # Reset file pointer to beginning
-        file_storage.seek(0)
+OCR_API_KEY = "K81994699488957"  # Replace with your actual API key
 
-        # Read image data
-        image_data = file_storage.read()
+def process_image(image_file):
+    url = "https://api.ocr.space/parse/image"
 
-        # Create image from binary data
-        image_stream = io.BytesIO(image_data)
-        image = Image.open(image_stream)
+    # Convert image to base64
+    image_data = base64.b64encode(image_file.read()).decode('utf-8')
 
-        # Convert image to text using Tesseract
-        text = pytesseract.image_to_string(image)
+    payload = {
+        "apikey": OCR_API_KEY,
+        "base64image": f"data:image/png;base64,{image_data}",
+        "language": "eng",
+        "isOverlayRequired": False
+    }
 
-        # Reset file pointer for potential future reads
-        file_storage.seek(0)
+    response = requests.post(url, data=payload)
+    result = response.json()
 
-        return text.strip()
-    except Exception as e:
-        raise Exception(f"Error processing image: {str(e)}")
+    if result.get("ParsedResults"):
+        return result["ParsedResults"][0]["ParsedText"]
+    return None

@@ -1,4 +1,6 @@
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()  # Define db here instead of importing from app.py
 
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
